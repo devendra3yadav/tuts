@@ -1,0 +1,11 @@
+# Development-specific configuration
+spring:
+  datasource:
+    url: jdbc:h2:mem:devdb
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG

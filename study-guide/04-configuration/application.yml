@@ -1,0 +1,91 @@
+spring:
+  application:
+    name: enterprise-spring-boot-examples
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  
+  # JMS Configuration (ActiveMQ)
+  activemq:
+    broker-url: vm://embedded-broker?broker.persistent=false
+    in-memory: true
+  
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: enterprise-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG
+    org.springframework.kafka: INFO
+    org.springframework.jms: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+
+# Custom Application Configuration
+app:
+  messaging:
+    queue-name: enterprise.queue
+    topic-name: enterprise.topic
+  kafka:
+    topic-name: enterprise-events
+  scheduling:
+    report-cron: "0 0 9 * * MON"  # Every Monday at 9 AM
+    cleanup-cron: "0 0 2 * * *"   # Every day at 2 AM
+  email:
+    enabled: true
+    from: noreply@example.com
+
+---
+# Development Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    com.example: DEBUG
+
+---
+# Production Profile
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    root: WARN
+    com.example: INFO
+  file:
+    name: /var/log/enterprise-app/application.log
